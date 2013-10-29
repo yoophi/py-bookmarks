@@ -28,7 +28,8 @@ def user_page(request, username):
     variables = RequestContext(request, {
         'bookmarks': bookmarks,
         'username': username,
-        'show_tags': True
+        'show_tags': True,
+        'show_edit': username == request.user.username,
     })
 
     return render_to_response('user_page.html', variables)
@@ -66,32 +67,33 @@ def register_page(request):
 def bookmark_save_page(request):
     if request.method == 'POST':
         form = BookmarkSaveForm(request.POST)
-        print >> sys.stderr, request.POST
 
         if form.is_valid():
-            link, dummy = Link.objects.get_or_create(
-                url=form.cleaned_data['url']
-            )
-
-            bookmark, created = Bookmark.objects.get_or_create(
-                user=request.user,
-                link=link
-            )
-
-            bookmark.title = form.cleaned_data['title']
-
-            if not created:
-                bookmark.tag_set.clear()
-
-            tag_names = form.cleaned_data['tags'].split()
-            for tag_name in tag_names:
-                tag, dummy = Tag.objects.get_or_create(name=tag_name)
-                bookmark.tag_set.add(tag)
-
-            bookmark.save()
+            bookmark = _bookmark_save(request, form)
             return HttpResponseRedirect(
                 '/user/%s' % request.user.username
             )
+    elif request.GET.has_key('url'):
+        url = request.GET['url']
+        title = ''
+        tags = ''
+        try:
+            link = Link.objects.get(url=url)
+            bookmark = Bookmark.objects.get(
+                link=link,
+                user=request.user
+            )
+            title = bookmark.title
+            tags = ' '.join(
+                tag.name for tag in bookmark.tag_set.all()
+            )
+        except ObjectDoesNotExist:
+            pass
+        form = BookmarkSaveForm({
+            'url': url,
+            'title': title,
+            'tags': tags
+        })
     else:
         form = BookmarkSaveForm()
 
@@ -156,4 +158,29 @@ def search_page(request):
         'show_tags': True,
         'show_user': True
     })
-    return render_to_response('search.html', variables)
+    if request.is_ajax():
+        return render_to_response('bookmark_list.html', variables)
+    else:
+        return render_to_response('search.html', variables)
+
+
+def _bookmark_save(request, form):
+    link, dummy = Link.objects.get_or_create(url=form.cleaned_data['url'])
+
+    bookmark, created = Bookmark.objects.get_or_create(
+        user=request.user,
+        link=link
+    )
+
+    bookmark.title = form.cleaned_data['title']
+
+    if not created:
+        bookmark.tag_set.clear()
+
+    tag_names = form.cleaned_data['tags'].split()
+    for tag_name in tag_names:
+        tag, dummy = Tag.objects.get_or_create(name=tag_name)
+        bookmark.tag_set.add(tag)
+
+    bookmark.save()
+    return bookmark

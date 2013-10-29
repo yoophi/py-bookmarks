@@ -3,6 +3,9 @@
 {% for bookmark in bookmarks %}
   <li>
     <a href="{{ bookmark.link.url }}" class="title">{{ bookmark.title|escape }}</a><br />
+    {% if show_edit %}
+    <a href="/save/?url={{ bookmark.link.url|urlencode }}" class="edit">[수정]</a>
+    {% endif %}
     {% if show_tags %}
     태그:
     {% if bookmark.tag_set.all %}
