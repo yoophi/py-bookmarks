@@ -97,3 +97,16 @@ def bookmark_save_page(request):
 
     variables = RequestContext(request, {'form': form})
     return render_to_response('bookmark_save.html', variables)
+
+
+def tag_page(request, tag_name):
+    print >> sys.stderr, 'tag_page'
+    tag = get_object_or_404(Tag, name=tag_name)
+    bookmarks = tag.bookmarks.order_by('-id')
+    variables = RequestContext(request, {
+        'bookmarks': bookmarks,
+        'tag_name': tag_name,
+        'show_tags': True,
+        'show_user': True
+    })
+    return render_to_response('tag_page.html', variables)

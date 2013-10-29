@@ -17,11 +17,12 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # (r'^admin/', include(admin.site.urls)),
     (r'^$', main_page),
-    (r'^user/(\w+)$', user_page),
+    (r'^user/(\w+)/?$', user_page),
     (r'^login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', logout_page),
     (r'^register/$', register_page),
     (r'^register/success$', direct_to_template, { 'template': 'registration/register_success.html' }),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', { 'document_root': 'site_media' }),
     (r'^save$', bookmark_save_page),
+    (r'^tag/([^\s]+)/?$', tag_page),
 )

@@ -8,7 +8,7 @@
     {% if bookmark.tag_set.all %}
       <ul class="tags">
       {% for tag in bookmark.tag_set.all %}
-        <li>{{ tag.name }}</li>
+      <li><a href="/tag/{{ tag.name }}">{{ tag.name }}</a></li>
       {% endfor %}
       </ul>
     {% else %}
@@ -18,7 +18,7 @@
     {% endif %}
     {% if show_user %}
       추가한 사용자:
-      < a href="/user/{{ bookmark.user.username }}/" class="username">{{ bookmark.user.username }}</a>
+      <a href="/user/{{ bookmark.user.username }}/" class="username">{{ bookmark.user.username }}</a>
     {% endif %}
   </li>
 {% endfor %}

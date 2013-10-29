@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}태그: {{ tag_name }}{% endblock %}
+{% block head %}태그: {{ tag_name }}의 북마크{% endblock %}
+
+{% block content %}
+  {% include "bookmark_list.html" %}
+{% endblock %}
