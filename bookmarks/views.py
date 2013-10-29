@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 #  Create your views here.
 
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import get_template
-from django.shortcuts import render_to_response
 from bookmarks.forms import *
 from bookmarks.models import *
 import sys
@@ -65,6 +66,7 @@ def register_page(request):
     )
 
 
+@login_required
 def bookmark_save_page(request):
     if request.method == 'POST':
         form = BookmarkSaveForm(request.POST)

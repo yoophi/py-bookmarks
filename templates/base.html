@@ -9,6 +9,7 @@
     <div id="nav">
       <a href="/">home</a> |
       {% if user.is_authenticated %}
+        <a href="/save">북마크 추가</a> | 
         {{ user.username }}님, 안녕하세요.
         (<a href="/logout">로그아웃</a>)
       {% else %}

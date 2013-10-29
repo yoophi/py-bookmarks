@@ -1,5 +1,8 @@
 # Django settings for py-bookmarks project.
 import os.path
+import django.contrib.auth
+
+LOGIN_URL = '/login/'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
