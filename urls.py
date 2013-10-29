@@ -26,4 +26,5 @@ urlpatterns = patterns('',
     (r'^save$', bookmark_save_page),
     (r'^tag/([^\s]+)$', tag_page),
     (r'^tag/?$', tag_cloud_page),
+    (r'^search/?$', search_page),
 )

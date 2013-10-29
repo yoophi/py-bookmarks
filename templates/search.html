@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}북마크를 검색하세요.{% endblock %}
+{% block head %}북마크를 검색하세요.{% endblock %}
+
+{% block content %}
+<form id="search-form" method="get" action="/search">
+  {{ form.as_p }}
+  <input type="submit" value="검색" />
+</form>
+<div id="search-results">
+{% if show_results %}
+  {% include 'bookmark_list.html' %}
+{% endif %}
+</div>
+{% endblock %}
