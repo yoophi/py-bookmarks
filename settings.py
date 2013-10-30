@@ -85,5 +85,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',
+    'django.contrib.comments',
     'py-bookmarks.bookmarks',
 )
