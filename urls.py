@@ -1,10 +1,16 @@
-from bookmarks.views import *
+import os.path
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
+from bookmarks.feeds import *
+from bookmarks.views import *
 
 # Uncomment the next two lines to enable the admin:
-# from django.contrib import admin
-# admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
+
+feeds = {
+    'recent': RecentBookmarks
+}
 
 urlpatterns = patterns('',
     # Example:
@@ -15,7 +21,7 @@ urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
-    # (r'^admin/', include(admin.site.urls)),
+    (r'^admin/', include(admin.site.urls)),
     (r'^$', main_page),
     (r'^popular/?$', popular_page),
     (r'^user/(\w+)/?$', user_page),
@@ -32,5 +38,13 @@ urlpatterns = patterns('',
     (r'^bookmark/(\d+)/$', bookmark_page),
     (r'^ajax/tag/autocomplete/$', ajax_tag_autocomplete),
 
+    # Comments
     (r'^comments/', include('django.contrib.comments.urls')),
+
+    # Feeds
+    (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
 )
+
+#urlpatterns += patterns('',
+#    (r'^admin/(.*)', admin.site.root),
+#)
