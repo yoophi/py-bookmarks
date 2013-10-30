@@ -2,6 +2,9 @@
 
 {% block title %}장고 북마크에 오신 것을 환영합니다.{% endblock %}
 {% block head %}장고 북마크에 오신 것을 환영합니다.{% endblock %}
+{% block external %}
+<link rel="alternate" type="application/rss+xml" title="장고 북마크 | 최신 북마크" href="/feeds/recent/" />
+{% endblock %}
 
 {% block content %}
   {% if user.username %}

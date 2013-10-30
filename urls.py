@@ -9,7 +9,8 @@ from django.contrib import admin
 admin.autodiscover()
 
 feeds = {
-    'recent': RecentBookmarks
+    'recent': RecentBookmarks,
+    'user': UserBookmarks
 }
 
 urlpatterns = patterns('',
