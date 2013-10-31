@@ -4,16 +4,21 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import get_template
-from django.db.models import Q
+
 from bookmarks.forms import *
 from bookmarks.models import *
+
 import sys
 from datetime import datetime, timedelta
+
+ITEMS_PER_PAGE = 10
 
 
 def main_page(request):
@@ -24,18 +29,34 @@ def main_page(request):
 
 
 def user_page(request, username):
+    print >> sys.stderr, 'user_page'
     user = get_object_or_404(User, username=username)
-    bookmarks = user.bookmark_set.order_by('-id')
+    query_set = user.bookmark_set.order_by('-id')
+    paginator = Paginator(query_set, ITEMS_PER_PAGE)
+    try:
+        page = int(request.GET['page'])
+    except:
+        page = 1
+    try:
+        bookmarks = paginator.page(page)
+    except:
+        raise Http404
     is_friend = Friendship.objects.filter(
         from_friend=request.user,
         to_friend=user
     )
-
     variables = RequestContext(request, {
-        'bookmarks': bookmarks,
+        'bookmarks': bookmarks.object_list,
         'username': username,
         'show_tags': True,
         'show_edit': username == request.user.username,
+        'show_paginator': paginator.num_pages > 1,
+        'has_prev': bookmarks.has_previous(),
+        'has_next': bookmarks.has_next(),
+        'page': page,
+        'pages': paginator.num_pages,
+        'next_page': bookmarks.next_page_number(),
+        'prev_page': bookmarks.previous_page_number(),
         'is_friend': is_friend
     })
 
