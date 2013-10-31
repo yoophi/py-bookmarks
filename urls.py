@@ -47,6 +47,8 @@ urlpatterns = patterns('',
 
     (r'^friends/(\w+)/$', friends_page),
     (r'^friend/add/(\w+)/$', friend_add),
+    (r'^friend/invite/$', friend_invite),
+    (r'^friend/accept/(\w+)/$', friend_accept),
 )
 
 #urlpatterns += patterns('',

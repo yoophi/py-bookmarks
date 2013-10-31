@@ -78,6 +78,21 @@ def register_page(request):
                 password=form.cleaned_data['password1'],
                 email=form.cleaned_data['email']
             )
+            if 'invitation' in request.session:
+                invitation = Invitation.objects.get(id=request.session['invitation'])
+                friendship = Friendship(
+                    from_friend=user,
+                    to_friend=invitation.sender
+                )
+                friendship.save()
+                friendship = Friendship(
+                    from_friend=invitation.sender,
+                    to_friend=user
+                )
+                friendship.save()
+                invitation.delete()
+                del request.session['invitation']
+
             return HttpResponseRedirect('/register/success')
     else:
         form = RegistrationForm()
@@ -306,9 +321,55 @@ def friend_add(request):
             from_friend=request.user,
             to_friend=friend
         )
-        friendship.save()
+        try:
+            friendship.save()
+            request.user.message_set.create(
+                message=u'%s를 친구로 추가했습니다.' % friend.username
+            )
+        except:
+            request.user.message_set.create(
+                message=u'%s는 이미 친구입니다.' % friend.username
+            )
         return HttpResponseRedirect(
             '/friends/%s/' % request.user.username
         )
     else:
         raise Http404
+
+
+@login_required
+def friend_invite(request):
+    if request.method == 'POST':
+        form = FriendInviteForm(request.POST)
+        if form.is_valid():
+            invitation = Invitation(
+                name=form.cleaned_data['name'],
+                email=form.cleaned_data['email'],
+                code=User.objects.make_random_password(20),
+                sender=request.user
+            )
+            invitation.save()
+            try:
+                invitation.send()
+                request.user.message_set.create(
+                    message=u'%s에게 초대 메세지를 보냈습니다.' % invitation.email
+                )
+            except:
+                request.user.message_set.create(
+                    message=u'초대하는 과정에서 오류가 있었습니다.'
+                )
+            return HttpResponseRedirect('/friend/invite/')
+    else:
+        form = FriendInviteForm()
+
+    variables = RequestContext(request, {'form': form})
+
+    return render_to_response('friend_invite.html', variables)
+
+
+def friend_accept(request, code):
+    invitation = get_object_or_404(Invitation, code__exact=code)
+    request.session['invitation'] = invitation.id
+    return HttpResponseRedirect('/register/')
+
+

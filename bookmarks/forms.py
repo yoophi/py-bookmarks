@@ -61,3 +61,9 @@ class SearchForm(forms.Form):
         label='검색어를 입력하세요.',
         widget=forms.TextInput(attrs={'size': 32})
     )
+
+
+class FriendInviteForm(forms.Form):
+    name = forms.CharField(label="친구의 이름")
+    email = forms.EmailField(label="친구의 이메일")
+

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Django settings for py-bookmarks project.
 import os.path
 import django.contrib.auth
@@ -88,3 +89,10 @@ INSTALLED_APPS = (
     'django.contrib.comments',
     'py-bookmarks.bookmarks',
 )
+
+SITE_HOST = '127.0.0.1:8000'
+DEFAULT_FROM_EMAIL = '장고 북마크 <django.bookmarks@example.com>'
+EMAIL_HOST = 'mail.yourisp.com'
+EMAIL_PORT = ''
+EMAIL_HOST_USER = 'username+mail.yourisp.com'
+EMAIL_HOST_PASSWORD = ''
