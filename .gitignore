@@ -37,3 +37,6 @@ nosetests.xml
 
 # Sqlite3 DB files
 bookmarksdb
+
+#
+.ropeproject
