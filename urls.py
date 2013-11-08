@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # Example:
     # (r'^py-bookmarks/', include('py-bookmarks.foo.urls')),
 
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
+    # Uncomment the admin/doc line below and add 'django.contrib.admindocs'
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     # (r'^admin/', include(admin.site.urls)),
     (r'^$', main_page),
     (r'^user/(\w+)$', user_page),
+    (r'^login/$', 'django.contrib.auth.views.login'),
 )
