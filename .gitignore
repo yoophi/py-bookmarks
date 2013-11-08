@@ -40,3 +40,6 @@ bookmarksdb
 
 #
 .ropeproject
+*.swp
+*.swo
+*~

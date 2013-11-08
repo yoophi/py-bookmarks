@@ -1,14 +1,13 @@
-<html>
-  <head>
-    <title>장고 북마크</title>
-  </head>
-  <body>
-    <h1>장고 북마크에 오신 것을 환영합니다.</h1>
-    {% if user.username %}
-    <p>{{ user.username }}님 안녕하세요. 여기에 북마크를 저장하고 공유할 수 있습니다!</p>
-    {% else %}
-    <p>안녕하세요!
-    북마크를 저장하고 공유하기 전에 먼저 <a href="/login/">login</a> 페이지에서 로그인하세요.</p>
-    {% endif %}
-  </body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}장고 북마크에 오신 것을 환영합니다.{% endblock %}
+{% block head %}장모 북마크에 오신 것을 환영합니다.{% endblock %}
+
+{% block content %}
+  {% if user.username %}
+  <p>{{ user.username }}님 안녕하세요. 여기에 북마크를 저장하고 공유할 수 있습니다!</p>
+  {% else %}
+  <p>안녕하세요!
+  북마크를 저장하고 공유하기 전에 먼저 <a href="/login/">login</a> 페이지에서 로그인하세요.</p>
+  {% endif %}
+{% endblock %}
