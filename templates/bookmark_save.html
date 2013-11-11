@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}북마크를 저장하세요.{% endblock %}
+{% block head %}북마크를 저장하세요.{% endblock %}
+
+{% block content %}
+<form method="post" action="/save">
+    {{ form.as_p }}
+    <input type="submit" value="저장" />
+</form>
+{% endblock %}
