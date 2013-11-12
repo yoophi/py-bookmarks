@@ -21,15 +21,21 @@ def main_page(request):
 
     return render_to_response('main_page.html', variables)
 
+
 def user_page(request, username):
     user = get_object_or_404(User, username=username)
     bookmarks = user.bookmark_set.order_by('-id')
+    is_friend = Friendship.objects.filter(
+        from_friend=request.user,
+        to_friend=user
+    )
 
     variables = RequestContext(request, {
         'bookmarks': bookmarks,
         'username': username,
         'show_tags': True,
         'show_edit': username == request.user.username,
+        'is_friend': is_friend
     })
 
     return render_to_response('user_page.html', variables)
@@ -251,3 +257,32 @@ def bookmark_page(request, bookmark_id):
     shared_bookmark = get_object_or_404(SharedBookmark, id=bookmark_id)
     variables = RequestContext(request, {'shared_bookmark': shared_bookmark})
     return render_to_response('bookmark_page.html', variables)
+
+
+def friends_page(request, username):
+    user = get_object_or_404(User, username=username)
+    friends = [friendship.to_friend for friendship in user.friend_set.all()]
+    friend_bookmarks = Bookmark.objects.filter(user__in=friends).order_by('-id')
+    variables = RequestContext(request, {
+        'username': username,
+        'friends': friends,
+        'bookmarks': friend_bookmarks[:10],
+        'show_tags': True,
+        'show_user': True
+    })
+    return render_to_response('friends_page.html', variables)
+
+@login_required
+def friend_add(request):
+    if request.GET.has_key('username'):
+        friend = get_object_or_404(User, username=request.GET['username'])
+        friendship = Friendship(
+            from_friend=request.user,
+            to_friend=friend
+        )
+        friendship.save()
+        return HttpResponseRedirect(
+            '/friends/%s/' % request.user.username
+        )
+    else:
+        raise Http404

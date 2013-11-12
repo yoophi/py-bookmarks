@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ username }}의 친구들{% endblock %}
+{% block head %}{{ username }}의 친구들{% endblock %}
+
+{% block content %}
+  <h2>친구들</h1>
+  {% if friends %}
+  <ul class="friends">
+    {% for friend in friends %}
+    <li><a href="/user/{{ friend.username }}/">{{ friend.username }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>아직 친구가 없군요.</p>
+  {% endif %}
+  
+  <h2>친구들의 최신 북마크</h2>
+{% include 'bookmark_list.html' %}
+{% endblock %}

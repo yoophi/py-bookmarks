@@ -44,6 +44,9 @@ urlpatterns = patterns('',
 
     # Feeds
     (r'^feeds/(?P<url>.*)/$', 'django.contrib.syndication.views.feed', {'feed_dict': feeds}),
+
+    (r'^friends/(\w+)/$', friends_page),
+    (r'^friend/add/(\w+)/$', friend_add),
 )
 
 #urlpatterns += patterns('',
