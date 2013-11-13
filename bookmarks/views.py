@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.template.loader import get_template
+from django.db.models import Q
 from bookmarks.forms import *
 from bookmarks.models import *
 import sys
@@ -171,8 +172,12 @@ def search_page(request):
         show_results = True
         query = request.GET['query'].strip()
         if query:
+            keywords = query.split()
+            q = Q()
+            for keyword in keywords:
+                q = q & Q(title__icontains=keyword)
             form = SearchForm({'query': query})
-            bookmarks = Bookmark.objects.filter(title__icontains=query)[:10]
+            bookmarks = Bookmark.objects.filter(q)[:10]
     variables = RequestContext(request, {
         'form': form,
         'bookmarks': bookmarks,
@@ -180,7 +185,7 @@ def search_page(request):
         'show_tags': True,
         'show_user': True
     })
-    if request.is_ajax():
+    if request.GET.has_key('ajax'):
         return render_to_response('bookmark_list.html', variables)
     else:
         return render_to_response('search.html', variables)
