@@ -72,7 +72,7 @@ def register_page(request):
 
 @login_required
 def bookmark_save_page(request):
-    ajax = request.GET.has_key('ajax')
+    ajax = 'ajax' in request.GET
     if request.method == 'POST':
         form = BookmarkSaveForm(request.POST)
 
@@ -92,7 +92,7 @@ def bookmark_save_page(request):
         else:
             if ajax:
                 return HttpResponse('failure')
-    elif request.GET.has_key('url'):
+    elif 'url' in request.GET:
         url = request.GET['url']
         title = ''
         tags = ''
@@ -168,7 +168,7 @@ def search_page(request):
     form = SearchForm()
     bookmarks = []
     show_results = False
-    if request.GET.has_key('query'):
+    if 'query' in request.GET:
         show_results = True
         query = request.GET['query'].strip()
         if query:
@@ -185,7 +185,7 @@ def search_page(request):
         'show_tags': True,
         'show_user': True
     })
-    if request.GET.has_key('ajax'):
+    if 'ajax' in request.GET:
         return render_to_response('bookmark_list.html', variables)
     else:
         return render_to_response('search.html', variables)
@@ -220,7 +220,7 @@ def _bookmark_save(request, form):
 
 
 def ajax_tag_autocomplete(request):
-    if request.GET.has_key('q'):
+    if 'q' in request.GET:
         tags = Tag.objects.filter(name__istartswith=request.GET['q'])[:10]
         return HttpResponse('\n'.join(tag.name for tag in tags))
     return HttpResponse()
@@ -228,7 +228,7 @@ def ajax_tag_autocomplete(request):
 
 @login_required
 def bookmark_vote_page(request):
-    if request.GET.has_key('id'):
+    if 'id' in request.GET:
         try:
             id = request.GET['id']
             shared_bookmark = SharedBookmark.objects.get(id=id)
@@ -242,7 +242,7 @@ def bookmark_vote_page(request):
         except ObjectDoesNotExist:
             raise Http404('북마크를 찾을 수 없습니다.')
 
-    if request.META.has_key('HTTP_REFERER'):
+    if 'HTTP_REFERER' in request.META:
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
     return HttpResponseRedirect('/')
@@ -279,7 +279,7 @@ def friends_page(request, username):
 
 @login_required
 def friend_add(request):
-    if request.GET.has_key('username'):
+    if 'username' in request.GET:
         friend = get_object_or_404(User, username=request.GET['username'])
         friendship = Friendship(
             from_friend=request.user,
